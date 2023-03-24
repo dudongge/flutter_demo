@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_demo/home.dart';
-import 'package:flutter_demo/mine_page.dart';
+import 'package:flutter_demo/mine.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,6 +14,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+
   int _tabIndex = 0;
   static const pages = [HomePage(),MinePage()];
 
@@ -22,7 +23,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: Text(appBarTitles[_tabIndex], style: const TextStyle(color: Colors.white)),
+          title: Text('title', style: const TextStyle(color: Colors.white)),
         ),
         body: IndexedStack(
           index: _tabIndex,
@@ -59,6 +60,4 @@ class _MyAppState extends State<MyApp> {
     ];
   }
 }
-
-
 

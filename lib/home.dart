@@ -1,6 +1,8 @@
 
 import 'package:flutter/material.dart';
 
+import 'banner.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -9,15 +11,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
-  late TabController _tabController;
-   final scrollController = ScrollController();
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _tabController = TabController(length: 2, vsync: this);
-  }
 
+  @override
+  Widget build(BuildContext context) {
+    return _buildHomeScaffoldPage();
+  }
   final comicTitles = [
     '动漫肖像',
     '暴君闺女五岁半',
@@ -50,26 +48,34 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     'https://n.sinaimg.cn/spider20230304/393/w168h225/20230304/c334-8e6759f57c1b26eb01f314763ac294ce.jpg'
   ];
 
+  late TabController _tabController;
   @override
-  Widget build(BuildContext context) {
-    return  _buildHomeScaffoldPage();
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
   }
 
   Widget _buildHomeScaffoldPage() {
     return Scaffold(
       body: Column(
         children: [
-          TabBar(
-            indicatorColor: Colors.black45,
-            labelColor: Colors.black,
-            unselectedLabelColor: Colors.black26,
-            controller: _tabController,
-            tabs: const <Widget>[
-              Tab(
-                text: "男生",
-              ),
-              Tab(
-                text: "女生",
+          Row(
+            children: [
+              TabBar(
+                indicatorColor: Colors.black45,
+                labelColor: Colors.black,
+                unselectedLabelColor: Colors.black26,
+                controller: _tabController,
+                isScrollable: true,
+                tabs: const <Widget>[
+                  Tab(
+                    text: "男生 👦🏻",
+                  ),
+                  Tab(
+                    text: "女生 👧",
+                  ),
+                ],
               ),
             ],
           ),
@@ -81,7 +87,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   child: _buildCustomScrollView(),
                 ),
                 Center(
-                  child: _buildGridView(),
+                  child: _buildCustomScrollView(),
                 ),
               ],
             ),
@@ -90,11 +96,50 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       ),
     );
   }
+  GridView _buildGridView() {
+      final itemW = (MediaQuery.of(context).size.width - 8 * 3 - 16 * 2) / 4;
+      final coverH = itemW / 79 * 80;
+      return GridView.builder(
+          padding: const EdgeInsets.only(top: 16.0),
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 4,
+            mainAxisSpacing: 8,
+            crossAxisSpacing: 8,
+            childAspectRatio: itemW / (coverH + coverH),
+          ),
+          itemCount: 40,
+          itemBuilder: (context, i) {
+            final index = i % 8 ;
+            return Column(
+              children: [
+                Container(
+                  clipBehavior: Clip.hardEdge,
+                  height: 120,
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.only(topLeft:Radius.circular(14.0),topRight:Radius.circular(14.0)),
+                    color: Colors.black45,
+                    // image: DecorationImage(image:NetworkImage(comicCovers[index])),
+                  ),
+                  child: Image.network(comicCovers[index],fit: BoxFit.fitHeight,),
+                ),
+                const SizedBox(
+                  height: 4,
+                ),
+                Text(comicTitles[index])
+              ],
+            );
+          });
+    }
 
   ListView _buildHomeListView() {
     return ListView.builder(
       shrinkWrap: true,
+      //范围内进行包裹（内容多高ListView就多高）
       physics: const NeverScrollableScrollPhysics(),
+      //禁止滚动
+      padding: const EdgeInsets.only(top: 6),
       itemCount: 6,
       itemBuilder: (context, index) {
         return Container(
@@ -105,7 +150,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               Container(
                 color: Colors.black12,
                 width: 50,
-                child: Image.network(comicCovers[index],fit: BoxFit.fitWidth,),
+                child: Image.network(comicCovers[index]),
               ),
               const SizedBox(
                 width: 8,
@@ -119,15 +164,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   ),
                   Container(
                     constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 80),
-                    child:  Text(
+                    child: Text(
                       comicSubtitles[index],
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(fontSize: 12, color: Colors.black26),
+                      style: const TextStyle(fontSize: 12, color: Colors.black26),
                     ),
                   ),
                   const Spacer(),
-                  Text(comicAuthors[index], style: TextStyle(fontSize: 12, color: Colors.black26))
+                  const Text("flutter", style: TextStyle(fontSize: 12, color: Colors.black26))
                 ],
               ),
             ],
@@ -137,45 +182,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  GridView _buildGridView() {
-      final itemW = (MediaQuery.of(context).size.width - 8 * 3 - 16 * 2) / 4;
-      final coverH = itemW / 80 * 90;
-      return GridView.builder(
-          padding: const EdgeInsets.only(top: 16.0,left: 8,right: 8),
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 4,
-            crossAxisSpacing: 8,
-            childAspectRatio: itemW / (coverH + 50),
-          ),
-          itemCount: 8,
-          itemBuilder: (context, index) {
-            return Column(
-              children: [
-                Container(
-                  height: coverH,
-                  width: itemW,
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                    // color: Colors.black45,
-                  ),
-                  child: Image.network(comicCovers[index],fit: BoxFit.fitHeight,),
-                ),
-                const SizedBox(
-                  height: 4,
-                ),
-                Container(constraints:BoxConstraints(maxWidth: itemW), child: Text(comicTitles[index],maxLines: 2,overflow: TextOverflow.ellipsis,))
-              ],
-            );
-          });
-    }
-
   Widget _buildCustomScrollView() {
     return CustomScrollView(
         controller: ScrollController(),
         key: const ValueKey(#customScroll),
         slivers: [
+          SliverToBoxAdapter(
+            child: _buildHomeBanner(),
+          ),
           SliverToBoxAdapter(
             child: _buildGridView(),
           ),
@@ -184,7 +198,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           ),
         ]);
   }
+
+  Widget _buildHomeBanner() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: HomeBanner(comicCovers,height: 80),
+    );
+  }
 }
-
-
 

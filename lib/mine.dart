@@ -13,7 +13,8 @@ class _MineState extends State<MinePage> {
   Widget build(BuildContext context) {
     return _buildMyListView();
   }
-  var mimeItemTitles = [
+
+  final mineItemTitles = [
     "卡片收集",
     "漫画商城",
     "活动中心",
@@ -25,7 +26,7 @@ class _MineState extends State<MinePage> {
     "设置",
     '关于我们'
   ];
-  var mimeItemLeftIcons = [
+  final mineItemLeftIcons = [
     Icons.card_giftcard,
     Icons.cases_sharp,
     Icons.local_activity,
@@ -39,31 +40,23 @@ class _MineState extends State<MinePage> {
   ];
 
   Widget _buildMyListView() {
-    var listView = ListView.builder(
-      itemCount: 10 * 2,
-      itemBuilder: (context, i) => _buildMyListItems(i),
+    final listView = ListView.builder(
+      itemCount: mineItemLeftIcons.length,
+      itemBuilder: (context, index) => _buildMyListItems(index,mineItemTitles[index],mineItemLeftIcons[index]),
     );
     return listView;
   }
 
-  Widget _buildMyListItems(i) {
-    if(i == 0) {
+  Widget _buildMyListItems(int index, String title, IconData iconData) {
+    if(0 == index) {
       return _buildMyHeaderWidget();
     }
-    --i;
-    if (i.isOdd) {
-      return const Divider(
-        height: 1.0,
-      );
-    }
-    i = i ~/ 2;
-    String title = mimeItemTitles[i];
-    var listItemContent = Padding(
+    final listItemContent = Container(
       padding: const EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 15.0),
       child: Row(
         children: <Widget>[
           Icon(
-            mimeItemLeftIcons[i],
+            iconData,
             color: Colors.grey,
             size: 20,
           ),
@@ -98,16 +91,15 @@ class _MineState extends State<MinePage> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: Colors.blue,
-                image: const DecorationImage(image: NetworkImage("http://t14.baidu.com/it/u=469621631,20563564&fm=224&app=112&f=JPEG?w=200&h=200"), fit: BoxFit.cover),
+                // image: const DecorationImage(image: NetworkImage(""), fit: BoxFit.cover),
                 border: Border.all(
                   color: Colors.white,
                   width: 2.0,
                 ),
               ),
-              // child: Image.network('http://t14.baidu.com/it/u=469621631,20563564&fm=224&app=112&f=JPEG?w=200&h=200'),
             ),
             const Text(
-              "GDG === GDG",
+              "GDG 淘气小猫 GDG",
               style: TextStyle(color: Colors.white, fontSize: 16.0),
             ),
           ],
